@@ -1,3 +1,5 @@
+use std::prelude::v1::*;
+
 pub fn constants() -> (Vec<Vec<&'static str>>, Vec<Vec<Vec<&'static str>>>) {
     let c_str: Vec<Vec<&str>> = vec![
         vec![

@@ -9,6 +9,8 @@ use ff::*;
 
 use std::prelude::v1::*;
 
+pub use ff::PrimeField;
+
 mod constants;
 mod fr;
 pub use fr::*;
@@ -239,8 +241,8 @@ mod tests {
         let big_arr: Vec<Fr> = vec![b1];
         let h = poseidon.hash_fixed(big_arr).unwrap();
         assert_eq!(
-            h.to_string(),
-            "Fr(0x29176100eaa962bdc1fe6c654d6a3c130e96a4d1168b33848b897dc502820133)" // "18586133768512220936620570745912940619677854269274689475585506675881198879027"
+            format!("{}", h.as_u256()),
+            "18586133768512220936620570745912940619677854269274689475585506675881198879027"
         );
 
         let big_arr: Vec<Fr> = vec![b1, b2];
@@ -318,6 +320,10 @@ mod tests {
         );
 
         let ret_ref = poseidon.hash_fixed(vec![b0, b0]).unwrap();
+        assert_eq!(
+            format!("{}", ret_ref.as_u256()),
+            "14744269619966411208579211824598458697587494354926760081771325075741142829156"
+        );
 
         let h = poseidon.hash_with_cap(vec![b0], 3, 0).unwrap();
         assert_eq!(h, ret_ref);

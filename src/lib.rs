@@ -9,7 +9,7 @@ use ff::*;
 
 use std::prelude::v1::*;
 
-pub use ff::PrimeField;
+pub use ff::{PrimeField, PrimeFieldDecodingError};
 
 mod constants;
 mod fr;

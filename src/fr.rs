@@ -14,11 +14,66 @@ impl Fr {
     pub fn as_u256(self) -> SU256 {
         self.into()
     }
+
+    pub fn from_u64(val: u64) -> Self {
+        let val: SU256 = val.into();
+        Fr::from_repr(FrRepr(val.0)).expect("u64 should in field")
+    }
+
+    pub fn from_usize(val: usize) -> Self {
+        Self::from_u64(val as u64)
+    }
+
+    pub fn from_big_endian(data: &[u8]) -> Result<Self, PrimeFieldDecodingError> {
+        let repr = if data.len() == 32 {
+            let mut repr = FrRepr::default();
+            repr.read_be(data).unwrap();
+            repr
+        } else {
+            let val = SU256::from_big_endian(data);
+            FrRepr(val.0)
+        };
+        Fr::from_repr(repr)
+    }
+
+    pub fn from_little_endian(data: &[u8]) -> Result<Self, PrimeFieldDecodingError> {
+        let repr = if data.len() == 32 {
+            let mut repr = FrRepr::default();
+            repr.read_le(data).unwrap();
+            repr
+        } else {
+            let val = SU256::from_little_endian(data);
+            FrRepr(val.0)
+        };
+        Fr::from_repr(repr)
+    }
+
+    pub fn bytes(&self) -> [u64; 4] {
+        self.0 .0
+    }
+
+    pub fn to_big_endian(self) -> [u8; 32] {
+        let mut buf = [0_u8; 32];
+        self.into_repr().write_be(&mut buf[..]).unwrap();
+        buf
+    }
+
+    pub fn to_little_endian(self) -> [u8; 32] {
+        let mut buf = [0_u8; 32];
+        self.into_repr().write_le(&mut buf[..]).unwrap();
+        buf
+    }
 }
 
-impl From<SU256> for Fr {
-    fn from(val: SU256) -> Self {
-        Fr::from_repr(FrRepr(val.0)).unwrap()
+impl From<u64> for Fr {
+    fn from(val: u64) -> Self {
+        Fr::from_u64(val)
+    }
+}
+
+impl From<usize> for Fr {
+    fn from(val: usize) -> Self {
+        Fr::from_usize(val)
     }
 }
 
